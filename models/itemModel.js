@@ -25,7 +25,9 @@ exports.validateItem = (_reqBody) => {
         categories_url: Joi.string().min(2).max(99).required(),
         price: Joi.number().min(2).max(99).required(),
         color: Joi.string().min(2).max(15).required(),
-        size: Joi.number().min(2).max(99).required(),
+        min_size: Joi.number().min(2).max(99).required(),
+        max_size: Joi.number().min(2).max(99).required() ,
+        
     })
     return joiSchema.validate(_reqBody);
 }

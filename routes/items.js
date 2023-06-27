@@ -25,7 +25,6 @@ router.get("/" , async(req,res)=> {
 
 router.get("/count", async(req,res) => {
   try{
-    // .countDocument -> מחזיר את המספר רשומות שקיימים במסד
     let count = await ItemModel.countDocuments({})
     res.json({count});
   }
@@ -42,7 +41,7 @@ router.post("/", auth, async(req,res) => {
   }
   try{
     let item = new ItemModel(req.body);
-    item.user_id = req.tokenData._id;
+    item.worker_id = req.tokenData._id;
     await item.save();
     res.json(item);
   }

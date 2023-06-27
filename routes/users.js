@@ -74,6 +74,7 @@ router.post("/", async (req, res) => {
 })
 
 router.post("/login", async (req, res) => {
+  console.log("sdfghjkl");
   let validBody = validLogin(req.body);
   if (validBody.error) {
     return res.status(400).json(validBody.error.details);

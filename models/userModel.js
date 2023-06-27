@@ -43,7 +43,7 @@ exports.validUser = (_reqBody) => {
     phone:Joi.string().min(8).max(99).required(),
     birth_date:Joi.string().min(2).max(99).required(),
     img_url:Joi.string().min(2).max(99).allow(null,""),
-    address: Joi.object.keys({ 
+    address: Joi.object().keys({ 
         city: Joi.string().min(2).max(99).required(),
         street:  Joi.string().min(2).max(99).required(),
         house_number: Joi.number().required()
