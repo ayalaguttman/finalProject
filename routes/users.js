@@ -45,7 +45,7 @@ router.get("/count", authAdmin, async (req, res) => {
   }
 })
 
-router.post("/", async (req, res) => {
+router.post("/",authAdmin ,async (req, res) => {
   let validBody = validUser(req.body);
   // במידה ויש טעות בריק באדי שהגיע מצד לקוח
   // יווצר מאפיין בשם אירור ונחזיר את הפירוט של הטעות

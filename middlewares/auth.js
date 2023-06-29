@@ -18,6 +18,29 @@ exports.auth = (req,res,next) => {
   }
 }
 
+exports.authWorker = (req,res,next) => {
+  let token = req.header("x-api-key");
+  if(!token){
+    return res.status(401).json({msg:"TOKEN is required"})
+  }
+  try{
+    let decodeToken = jwt.verify(token,config.tokenSecret);
+    // check if the role in the token of worker
+    if(decodeToken.role != "worker" && decodeToken.role != "admin"  ){
+      return res.status(401).json({msg:"Token invalid or expired, code: 4"})
+    }
+   
+    req.tokenData = decodeToken;
+
+    next();
+  }
+  catch(err){
+    console.log(err);
+    return res.status(401).json({msg:"Token invalid or expired, log in again or you hacker!"})
+  }
+}
+
+
 exports.authAdmin = (req,res,next) => {
   let token = req.header("x-api-key");
   if(!token){
