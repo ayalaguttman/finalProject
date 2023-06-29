@@ -1,5 +1,5 @@
 const express= require("express");
-const { auth } = require("../middlewares/auth");
+const { auth, authWorker , authAdmin } = require("../middlewares/auth");
 const { validateItem,  ItemModel} = require("../models/itemModel");
 const router = express.Router();
 
@@ -34,7 +34,7 @@ router.get("/count", async(req,res) => {
   }
 })
 
-router.post("/", auth, async(req,res) => {
+router.post("/", authWorker , async(req,res) => {
   let validBody = validateItem(req.body);
   if(validBody.error){
     res.status(400).json(validBody.error.details)
@@ -51,7 +51,7 @@ router.post("/", auth, async(req,res) => {
   }
 })
 
-router.put("/:idEdit",auth,async(req,res) => {
+router.put("/:idEdit",authWorker ,async(req,res) => {
   let validBody = validateItem(req.body);
   if(validBody.error){
     res.status(400).json(validBody.error.details)
@@ -73,7 +73,7 @@ router.put("/:idEdit",auth,async(req,res) => {
   }
 })
 
-router.delete("/:idDel",auth,async(req,res) => {
+router.delete("/:idDel",authWorker,async(req,res) => {
   try{
     let idDel= req.params.idDel
     let data ;
