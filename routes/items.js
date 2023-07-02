@@ -22,6 +22,23 @@ router.get("/" , async(req,res)=> {
     res.status(500).json({msg:"there error try again later",err})
   }
 })
+router.get("/:idItem" , async(req,res)=> {
+ 
+  try{
+    let data = await ItemModel.findOne({_id:req.params.idItem})
+    // .sort({_id:-1}) like -> order by _id DESC
+    if (!data) {
+      return res.status(401).json({ msg: "not found, check the id" })
+    }
+    res.json(data);
+
+  }
+  catch(err){
+    console.log(err);
+    res.status(500).json({msg:"there error try again later",err})
+  }
+})
+
 
 router.get("/count", async(req,res) => {
   try{
