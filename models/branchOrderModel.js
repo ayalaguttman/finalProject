@@ -2,12 +2,12 @@ const mongoose =require("mongoose");
 const Joi = require("joi");
 const jwt = require("jsonwebtoken");
 const {config} = require("../config/secret")
-const {user}=require("./userModel") 
+const {UserModel}=require("./userModel") 
 const branchOrderSchema = new mongoose.Schema({
     
         item_id:String,
         size:Number,
-        user_id:Number,
+        user_id:String,
         source_branch_code:String,
         target_branch_code:String,
         status:String,
@@ -16,19 +16,19 @@ const branchOrderSchema = new mongoose.Schema({
         type:Date , default:Date.now()
       }
 })
-exports.OrderModel = mongoose.model("orders",branchOrderSchema);
+exports.BranchOrderModel = mongoose.model("orders",branchOrderSchema);
 
-exports.validateOrder = (_reqBody) => {
+exports.validateBranchOrder = (_reqBody) => {
     let joiSchema = Joi.object({
       item_id: Joi.string().min(2).max(99).required(),
       size: Joi.number().min(1).max(60).required(),
-      user_id: Joi.string().min(2).max(99).custom(async (value, helpers) => {
-        const user = await mongoose.model('users').findById(value);
-        if (!user) {
-          return helpers.message('Invalid user ID.');
-        }
-        return value;
-      }).required(),
+      // user_id: Joi.string().min(2).max(99).custom(async (value, helpers) => {
+      //   const user = await mongoose.model('users').findById(value);
+      //   if (!user) {
+      //     return helpers.message('Invalid user ID.');
+      //   }
+      //   return value;
+      // }).allow(),
       source_branch_code: Joi.string().min(2).max(99).required(),
         target_branch_code:Joi.string().min(2).max(99).required(),
         status: Joi.string().valid(
@@ -41,7 +41,7 @@ exports.validateOrder = (_reqBody) => {
           'Delivered',
           'Cancelled',
         ).required(),
-        worker_id: Joi.string().min(2).max(99).required()
+        worker_id: Joi.string().min(2).max(99).allow()
            
     })
     return joiSchema.validate(_reqBody);
