@@ -1,6 +1,6 @@
 const express= require("express");
 const { auth, authWorker , authAdmin } = require("../middlewares/auth");
-const { validateBranchOrder,  BranchOrderModel} = require("../models/branchOrderModel");
+const { validateStorageOrder,  StorageOrderModel} = require("../models/storageOrderModel");
 const router = express.Router();
 
 router.get("/" , authWorker ,async(req,res)=> {
@@ -10,7 +10,7 @@ router.get("/" , authWorker ,async(req,res)=> {
   let reverse = req.query.reverse == "yes" ? 1 : -1;
 
   try{
-    let data = await BranchOrderModel.find({})
+    let data = await StorageOrderModel.find({})
     .limit(perPage)
     .skip((page - 1) * perPage)
     // .sort({_id:-1}) like -> order by _id DESC
@@ -25,7 +25,7 @@ router.get("/" , authWorker ,async(req,res)=> {
 
 router.get("/count",authWorker, async(req,res) => {
   try{
-    let count = await BranchOrderModel.countDocuments({})
+    let count = await StorageOrderModel.countDocuments({})
     res.json({count});
   }
   catch(err){
@@ -35,12 +35,12 @@ router.get("/count",authWorker, async(req,res) => {
 })
 
 router.post("/" ,auth, async(req,res) => {
-  let validBody = validateBranchOrder(req.body);
+  let validBody = validateStorageOrder(req.body);
   if(validBody.error){
     res.status(400).json(validBody.error.details)
   }
   try{
-    let order = new BranchOrderModel(req.body);
+    let order = new StorageOrderModel(req.body);
     order.user_id = req.tokenData._id;
     await order.save();
     res.json(order);
@@ -52,7 +52,7 @@ router.post("/" ,auth, async(req,res) => {
 })
 
 router.put("/:idEdit",authWorker ,async(req,res) => {
-  let validBody = validateBranchOrder(req.body);
+  let validBody = validateStorageOrder(req.body);
   if(validBody.error){
     res.status(400).json(validBody.error.details)
   }
@@ -60,10 +60,10 @@ router.put("/:idEdit",authWorker ,async(req,res) => {
     let idEdit= req.params.idEdit
     let data ;
     if(req.tokenData.role == "admin"){
-      data = await BranchOrderModel.updateOne({_id:idEdit},req.body);
+      data = await StorageOrderModel.updateOne({_id:idEdit},req.body);
     }
     else{
-      data = await BranchOrderModel.updateOne({_id:idEdit,user_id:req.tokenData._id},req.body);
+      data = await StorageOrderModel.updateOne({_id:idEdit,user_id:req.tokenData._id},req.body);
     }
     res.json(data);
   }
@@ -80,13 +80,13 @@ router.patch("/updateStatus/:orderID", auth, async (req, res) => {
     try {
       let orderID = req.params.orderID
       if(req.tokenData.role == "admin"||req.tokenData.role == "worker"){
-        let data = await BranchOrderModel.updateOne({_id:orderID,worker_id:req.tokenData._id},{ status: req.body.status });
+        let data = await StorageOrderModel.updateOne({_id:orderID,worker_id:req.tokenData._id},{ status: req.body.status });
         res.json(data);
 
       }
       else{
         if(req.body.status=="Cancelled"){
-      let data = await BranchOrderModel.updateOne({_id:orderID,user_id:req.tokenData._id},{ status: req.body.status });
+      let data = await StorageOrderModel.updateOne({_id:orderID,user_id:req.tokenData._id},{ status: req.body.status });
       res.json(data);
     }
     else{
@@ -108,7 +108,7 @@ router.delete("/:idDel",authAdmin,async(req,res) => {
     let idDel= req.params.idDel
     let data ;
     
-      data = await BranchOrderModel.deleteOne({_id:idDel,user_id:req.tokenData._id});
+      data = await StorageOrderModel.deleteOne({_id:idDel,user_id:req.tokenData._id});
     
     res.json(data);
   }
